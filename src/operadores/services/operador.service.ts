@@ -1,12 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ProductosService } from 'src/productos/services/productos.service';
 import { Pedido } from '../entitis/pedido.entities';
 import { Operador } from '../entitis/operador.entities';
+import { Client } from 'pg';
+
 
 @Injectable()
 export class OperadorService {
     constructor(
         private readonly productService:ProductosService,
+        @Inject('PG') private clientPg:Client
     ){};
     
     private operadores:Operador[] = [
@@ -55,6 +58,4 @@ export class OperadorService {
             products: this.productService.getAllProduct(),
         };
     };
-
-
 };

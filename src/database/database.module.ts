@@ -1,31 +1,53 @@
 import { Global, Module } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 import { Client } from 'pg';
+import config from 'src/config/config';
 
-const client = new Client({
-    user: 'root',
-    host: 'localhost',
-    database: 'my_db',
-    password: '123456',
-    port: 5432,
-});
+const APIKEY = 'DEV-123';
+const APIKEYPROD = 'PROD-234';
 
-client.connect();
+// const client = new Client({
+//     user: 'root',
+//     host: 'localhost',
+//     database: 'my_db',
+//     password: '123456',
+//     port: 5432,
+// });
 
-client.query('SELECT * FROM tareas', (err, res) => {
-    console.error(err);
-    console.log(res.rows);
-});
+// client.connect();
 
+// client.query('SELECT * FROM tareas', (err, res) => {
+//     console.error(err);
+//     console.log(res.rows);
+// });
 
 @Global()
 @Module({
     providers: [
         {
-            provide: 'PG',
-            useValue: client, 
-        },  
-        ],        
-    exports: ['API_KEY', 'PG'], 
-})
-export class DatabaseModule {}
+            provide: 'APIKEY',
+            useValue: process.env.NODE_ENV === 'prod' ? APIKEYPROD : APIKEY,
+        }, 
+        { 
+        provide: 'PG',
+        useFactory: (configService: ConfigType<typeof config>) => {
+            const { user, host, dbName, password, port } = configService.postgres;
+            const client = new Client({
+                user,
+                host,
+                database: dbName,
+                password,
+                port,
+            });
+            client.connect();
+            return client;
+        },
+        inject: [config.KEY],
+    },
 
+    ],        
+
+    exports: [ 'APIKEY', 'PG' ], 
+})
+
+export class DatabaseModule {}

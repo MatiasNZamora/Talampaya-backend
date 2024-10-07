@@ -17,10 +17,8 @@ export class AppController {
   getUseFactory(){
     // return this.appService.getUseFactory();
   };
-
-  @Get()
+  @Get('/tasks')
   getTasks(){
     return this.appService.getTasks();
   };
-
 };

@@ -24,4 +24,6 @@ export class OperadorController {
     getOreder( @Param('id', ParseIntPipe ) id:number ){
         return this.operadorService.getOrders(id);
     };
+
+    
 };

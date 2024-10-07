@@ -33,15 +33,15 @@ import { lastValueFrom } from 'rxjs';
   controllers: [AppController],
   providers: [ 
     AppService,
-    {
-      provide: 'TAREA_ASINC',
-      useFactory: async ( http:HttpService ) => {
-        const req = http.get('https://jsonplaceholder.typicode.com/posts');
-        const tarea = await lastValueFrom(req);
-        return tarea.data;
-      },
-      inject: [HttpService],
-    },
+    // {
+    //   provide: 'TAREA_ASINC',
+    //   useFactory: async ( http:HttpService ) => {
+    //     const req = http.get('https://jsonplaceholder.typicode.com/posts');
+    //     const tarea = await lastValueFrom(req);
+    //     return tarea.data;
+    //   },
+    //   inject: [HttpService],
+    // },
   ],  
 })
 
