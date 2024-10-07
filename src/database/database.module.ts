@@ -1,4 +1,31 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
+import { Client } from 'pg';
 
-@Module({})
+const client = new Client({
+    user: 'root',
+    host: 'localhost',
+    database: 'my_db',
+    password: '123456',
+    port: 5432,
+});
+
+client.connect();
+
+client.query('SELECT * FROM tareas', (err, res) => {
+    console.error(err);
+    console.log(res.rows);
+});
+
+
+@Global()
+@Module({
+    providers: [
+        {
+            provide: 'PG',
+            useValue: client, 
+        },  
+        ],        
+    exports: ['API_KEY', 'PG'], 
+})
 export class DatabaseModule {}
+

@@ -14,6 +14,7 @@ import { JoiValidationSchema } from './config/joi.validation';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 
+
 @Module({
   imports: [
     OperadoresModule, // modulo de operadores

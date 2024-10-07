@@ -15,7 +15,12 @@ export class AppController {
 
   @Get()
   getUseFactory(){
-    return this.appService.getUseFactory();
+    // return this.appService.getUseFactory();
+  };
+
+  @Get()
+  getTasks(){
+    return this.appService.getTasks();
   };
 
 };
