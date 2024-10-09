@@ -10,7 +10,6 @@
 # Mysql
 /mysql_data
 
-
 # Logs
 logs
 *.log
