@@ -6,21 +6,6 @@ import config from 'src/config/config';
 const APIKEY = 'DEV-123';
 const APIKEYPROD = 'PROD-234';
 
-// const client = new Client({
-//     user: 'root',
-//     host: 'localhost',
-//     database: 'my_db',
-//     password: '123456',
-//     port: 5432,
-// });
-
-// client.connect();
-
-// client.query('SELECT * FROM tareas', (err, res) => {
-//     console.error(err);
-//     console.log(res.rows);
-// });
-
 @Global()
 @Module({
     providers: [
@@ -43,10 +28,7 @@ const APIKEYPROD = 'PROD-234';
             return client;
         },
         inject: [config.KEY],
-    },
-
-    ],        
-
+    }],        
     exports: [ 'APIKEY', 'PG' ], 
 })
 

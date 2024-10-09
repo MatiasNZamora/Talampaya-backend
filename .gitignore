@@ -7,6 +7,10 @@
 # Postgress
 /postgres_data
 
+# Mysql
+/mysql_data
+
+
 # Logs
 logs
 *.log
