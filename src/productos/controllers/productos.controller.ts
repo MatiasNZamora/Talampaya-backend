@@ -16,7 +16,7 @@ export class ProductosController {
 
     @ApiOperation({ summary: 'Obtener un producto por ID.' })
     @Get('/:id')
-    findOne( @Param('id') id:string ){
+    findOne( @Param('id') id:number ){
         return this.productosService.getProductById(id);
     };
 
@@ -30,13 +30,13 @@ export class ProductosController {
 
     @ApiOperation({ summary: 'Actualizar un producto.' })
     @Patch(':id')
-    updateProduct( @Param('id') id:string, @Body() updateFinelds: UpdateProductDto ){
+    updateProduct( @Param('id') id:number, @Body() updateFinelds: UpdateProductDto ){
         return this.productosService.updateProduct(id, updateFinelds );
     };
 
     @ApiOperation({ summary: 'Borrar un producto.' })
     @Delete(':id')
-    deleteProduct( @Param('id') id:string ){
+    deleteProduct( @Param('id') id:number ){
         this.productosService.deleteProduct(id);
     };
 

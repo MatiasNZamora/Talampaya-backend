@@ -45,7 +45,7 @@ export class OperadorService {
         return  operadorFound;
     }
 
-    getOrders( id:number ):Pedido { 
+    async getOrders( id:number ) { 
         const operador = this.findOne(id);
         
         if(!operador) {
@@ -55,7 +55,7 @@ export class OperadorService {
         return {            
             date: new Date(),
             operador, 
-            products: this.productService.getAllProduct(),
+            products: await this.productService.getAllProduct(),
         };
     };
 };
