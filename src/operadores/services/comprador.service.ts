@@ -11,7 +11,7 @@ export class CompradorService {
         @InjectRepository(Comprador) private compradorRepo: Repository<Comprador>,
     ){};
 
-    async finAll(){
+    async findAll(){
         return await this.compradorRepo.find();
     };
 

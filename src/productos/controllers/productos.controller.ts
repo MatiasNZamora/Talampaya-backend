@@ -30,8 +30,8 @@ export class ProductosController {
 
     @ApiOperation({ summary: 'Actualizar un producto.' })
     @Patch(':id')
-    updateProduct( @Param('id') id:number, @Body() updateFinelds: UpdateProductDto ){
-        return this.productosService.updateProduct(id, updateFinelds );
+    updateProduct( @Param('id') id:number, @Body() updateFields: UpdateProductDto ){
+        return this.productosService.updateProduct(id, updateFields );
     };
 
     @ApiOperation({ summary: 'Borrar un producto.' })

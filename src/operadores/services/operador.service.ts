@@ -20,26 +20,26 @@ export class OperadorService {
         private compradorService: CompradorService,
     ){};
     
-    private operadores:Operador[] = [
-        // {
-        //     id: 1,
-        //     email: 'emai@correo.com.ar',
-        //     password: '47801',
-        //     role: 'admin',
-        // },
-        // {
-        //     id: 2,
-        //     email: 'emai2@correo.com.ar',
-        //     password: '34859739',
-        //     role: 'regular',
-        // },
-        // {
-        //     id: 3,
-        //     email: 'emai3@correo.com.ar',
-        //     password: '1231231',
-        //     role: 'user',
-        // },
-    ];
+    // private operadores:Operador[] = [
+    //     // {
+    //     //     id: 1,
+    //     //     email: 'emai@correo.com.ar',
+    //     //     password: '47801',
+    //     //     role: 'admin',
+    //     // },
+    //     // {
+    //     //     id: 2,
+    //     //     email: 'emai2@correo.com.ar',
+    //     //     password: '34859739',
+    //     //     role: 'regular',
+    //     // },
+    //     // {
+    //     //     id: 3,
+    //     //     email: 'emai3@correo.com.ar',
+    //     //     password: '1231231',
+    //     //     role: 'user',
+    //     // },
+    // ];
 
     async findAll(){
         return await this.operadorRepo.find({
