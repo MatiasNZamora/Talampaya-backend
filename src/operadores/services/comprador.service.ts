@@ -2,6 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Comprador } from '../entitis/comprador.entities';
 import { Repository } from 'typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateCompradorDto, UpdateCompradorDto } from '../dto/comprador.dto';
 
 @Injectable()
 export class CompradorService {
@@ -22,15 +23,12 @@ export class CompradorService {
         return compradorFound;
     };
 
-    //TODO: AGREGAR CreateCompradorDto
-    async create( data  ){
+    async create( data:CreateCompradorDto  ){
         const newComprador = await this.compradorRepo.create(data);
         return await this.compradorRepo.save(newComprador);
     };
 
-    //TODO: AGREGAR UpdateCompradorDto
-
-    async update(id: number, changes ){
+    async update(id: number, changes:UpdateCompradorDto ){
         const compradorFound = await this.compradorRepo.findOne(id);
         const updComp = this.compradorRepo.merge(compradorFound, changes);
         return this.compradorRepo.save(updComp);
@@ -39,7 +37,5 @@ export class CompradorService {
     remove(id:number){
         return this.compradorRepo.delete(id);
     };
-
-
 
 };
