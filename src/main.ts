@@ -15,6 +15,7 @@ async function bootstrap() {
     .setDescription('Documentación para la API de pedidos')
     .setVersion('1.0.0')
     .build();
+    
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 

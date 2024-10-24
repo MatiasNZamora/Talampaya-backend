@@ -49,4 +49,3 @@ export class OperadorController {
 };
 
 //? agrege el ParseIntPipe en los que requerian el id para que en caso de enviarlo como string me lo cambie
-// TODO: probar todos los nuevos endpoint.
