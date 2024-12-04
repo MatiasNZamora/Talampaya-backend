@@ -1,56 +1,63 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { productDto, UpdateProductDto } from 'src/productos/dto/products.dto';
-import { Producto } from 'src/productos/entitis/producto.entities';
-// import { v4 as uuid } from 'uuid';
 
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectModel } from '@nestjs/mongoose';
+import { FilterQuery, Model } from 'mongoose';
+
+import { Producto } from '../entities/producto.entity';
+import {
+  CreateProductDTO,
+  FilterProductsDto,
+  UpdateProductDTO,
+} from '../dtos/productos.dto';
 
 @Injectable()
-export class ProductosService { 
-    constructor(
-        @InjectRepository(Producto) private productRepo:Repository<Producto>
-    ){}
+export class ProductosService {
+  constructor(
+    @InjectModel(Producto.name) private productModel: Model<Producto>,
+  ) {}
 
-    getAllProduct(){
-        return this.productRepo.find();
-    };
+  findAll(params?: FilterProductsDto) {
+    if (params) {
+      const filters: FilterQuery<Producto> = {}; // Se crean los filtros
+      const { limit, offset } = params;
+      const { precioMinimo, precioMaximo } = params; // se reciben los parametros para el filtro
+      if (precioMinimo && precioMaximo) {
+        filters.precio = { $gte: precioMinimo, $lte: precioMaximo };
+      }
+      return this.productModel
+        .find(filters)
+        .populate('fabricante')
+        .skip(offset)
+        .limit(limit)
+        .exec();
+    }
+    return this.productModel.find().populate('fabricante').exec();
+  }
 
-    getProductById( id:number ) {
-        const productFound = this.productRepo.findOne({id});
-        
-        if(!productFound) {
-            return new NotFoundException( `El producto con el id: ${id} no existe.` )
-        };
+  async findOne(id: string) {
+    const product = await this.productModel.findById(id).exec();
+    if (!product) {
+      throw new NotFoundException(`Product #${id} not found`);
+    }
+    return product;
+  }
 
-        return productFound;
-    };
-    
-    createPorduct( data:productDto ){
-        const newPorduct = this.productRepo.create(data);
-        return this.productRepo.save(newPorduct);
-    };
+  create(data: CreateProductDTO) {
+    const newProduct = new this.productModel(data);
+    return newProduct.save();
+  }
 
-    async updateProduct( id:number, updateFinelds: UpdateProductDto ){
-        // const product = this.getProductById(id); // busco el producto
-        // const update = Object.assign( product, updateFinelds ); // remplazo los valores de los productos por los que ingresan en el "uploads"
-        // this.products.map( product => product.id === id ? update : product ); //con el ternario evaluo el id y remplazo valores de ser correcto.
-        
-        const product = await this.productRepo.findOne({id})
-        this.productRepo.merge(product, updateFinelds); // combino el producto con los campos actualizados.
-        return this.productRepo.save(product);
-    };
+  update(id: string, changes: UpdateProductDTO) {
+    const product = this.productModel
+      .findByIdAndUpdate(id, { $set: changes }, { new: true }) // { $set: changes } actualiza los datos pasados no el objeto entero
+      .exec();
+    if (!product) {
+      throw new NotFoundException(`Product #${id} not found`);
+    }
+    return product;
+  }
 
-    deleteProduct( id:number ){
-        if(!id) {
-            return new NotFoundException(`El producto con el id: ${id} no existe.`)
-        }
-        return this.productRepo.delete({id});
-    };
-
-    fillProductWhitSeedData( products:Producto[] ){
-        // this.products = products;
-        // this.productRepo.save(products)
-    };
-
-};
+  remove(id: string) {
+    return this.productModel.findByIdAndDelete(id);
+  }
+}

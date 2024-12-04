@@ -1,44 +1,72 @@
-import { Controller, Delete, Get, Patch, Post, Body, Param } from '@nestjs/common';
-import { productDto, UpdateProductDto } from 'src/productos/dto/products.dto';
-import { ProductosService } from 'src/productos/services/productos.service';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Put,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { ProductosService } from '../services/productos.service';
+import { CreateProductDTO, FilterProductsDto, UpdateProductDTO } from '../dtos/productos.dto';
+
+import { MongoIdPipe } from './../../common/mongo-id.pipe';
+
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/models/roles.model';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+
+
+@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('Productos')
-@Controller('/productos')
+@Controller('productos')
 export class ProductosController {
-    constructor( private productosService:ProductosService ){}
+  constructor(private productsService: ProductosService) {}
 
-    @ApiOperation({ summary: 'Obtener lista de productos.' })
-    @Get()
-    findAll(){
-        return this.productosService.getAllProduct();
+  @Public()
+  // @Roles(Role.ADMIN)
+  @Get()
+  @ApiOperation({ summary: 'Registros de productos' })
+  getProducts(@Query() params: FilterProductsDto) {
+    return this.productsService.findAll(params);
+  }
+
+  @Get('filter') // Solucionamos cambiando la posicion
+  getProductFilter() {
+    return {
+      message: `filtro bloqueado`,
     };
+  }
 
-    @ApiOperation({ summary: 'Obtener un producto por ID.' })
-    @Get('/:id')
-    findOne( @Param('id') id:number ){
-        return this.productosService.getProductById(id);
-    };
+  @Get(':productId')
+  getOne(@Param('productId', MongoIdPipe) productId: string) {
+    return this.productsService.findOne(productId);
+  }
 
-    @ApiOperation({ summary: 'Crear un producto.' })
-    @Post()
-    createProduct( @Body() product: productDto ){
-        
-        console.log(product);
-        return this.productosService.createPorduct( product );
-    };
+  @Roles(Role.ADMIN)
+  @Post()
+  create(@Body() payload: CreateProductDTO) {
+    return this.productsService.create(payload);
+  }
 
-    @ApiOperation({ summary: 'Actualizar un producto.' })
-    @Patch(':id')
-    updateProduct( @Param('id') id:number, @Body() updateFields: UpdateProductDto ){
-        return this.productosService.updateProduct(id, updateFields );
-    };
+  @Put(':id')
+  update(
+    @Param('id', MongoIdPipe) id: string,
+    @Body() payload: UpdateProductDTO,
+  ) {
+    return this.productsService.update(id, payload);
+  }
 
-    @ApiOperation({ summary: 'Borrar un producto.' })
-    @Delete(':id')
-    deleteProduct( @Param('id') id:number ){
-        this.productosService.deleteProduct(id);
-    };
-
-
+  @Roles(Role.ADMIN)
+  @Delete(':id')
+  delete(@Param('id', MongoIdPipe) id: string) {
+    return this.productsService.remove(id);
+  }
 }

@@ -1,24 +1,44 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 
-@ApiTags('index')
+import { AppService } from './app.service';
+
+import { ApikeyGuard } from './auth/guards/apikey.guard';
+import { Public } from './auth/decorators/public.decorator';
+
+@UseGuards(ApikeyGuard)
 @Controller()
 export class AppController {
-  constructor( private readonly appService: AppService ) {}
+  constructor(private readonly appService: AppService) {}
 
-  @ApiOperation({ summary: 'Index de la aplicación' })
   @Get()
   getHello(): string {
+    //return 'Hola gente, bienvenidos a Nest.JS!!';
     return this.appService.getHello();
-  };
+  }
 
-  @Get()
-  getUseFactory(){
-    // return this.appService.getUseFactory();
-  };
-  @Get('/tasks')
-  getTasks(){
+  @Get('usefactory')
+  getUseFactory(): string {
+    return this.appService.getUseFactory();
+  }
+
+  @Public()
+  @Get('operativo')
+  getEstoyFuncionando(): string {
+    return 'Metodo para probar guardian';
+  }
+
+  @Get('/estoyok/') // En Express daría problemas...
+  getEstoyOK(): string {
+    return 'Sigo OK con /';
+  }
+
+  @Get('/tasks/')
+  getTasks() {
     return this.appService.getTasks();
-  };
-};
+  }
+
+  @Get('nuevo')
+  newEndPoint(){
+    return 'Auth';
+  }
+}
